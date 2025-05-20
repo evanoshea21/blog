@@ -45,6 +45,8 @@ function EditorJs({ existingContent }: Props) {
     // if(pathname.includes("update") && !existingContent) return
     let content;
     if (existingContent) {
+      console.log("IsFeatured: ", existingContent.isFeatured);
+
       content = existingContent.content as unknown as OutputData;
       setSlug(existingContent.slug);
       setTitle(existingContent.title);
@@ -241,7 +243,7 @@ function EditorJs({ existingContent }: Props) {
           id="isFeatured"
           name="isFeatured"
           onChange={(e) => setIsFeatured(e.target.checked)}
-          value={String(isFeatured)}
+          checked={isFeatured}
         />
         <label htmlFor="category">category:</label>
         <input
