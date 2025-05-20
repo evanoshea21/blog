@@ -2,6 +2,7 @@
 import React from "react";
 import EditorJS from "@editorjs/editorjs";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createBlog, updateBlog, getRandomBlog } from "@/app/server.actions";
 
 import Header from "@editorjs/header";
@@ -24,6 +25,7 @@ interface Props {
 
 function EditorJs({ existingContent }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
   const editorRef = React.useRef<EditorJS | null>(null);
 
   const [slug, setSlug] = React.useState<string>("");
@@ -164,13 +166,18 @@ function EditorJs({ existingContent }: Props) {
 
         if (pathname.includes("create")) {
           return createBlog(blogData);
-        } else if (pathname.includes("update")) {
+        } else {
           const slugToUpdate = pathname.slice(pathname.lastIndexOf("/") + 1);
           console.log("SLUG for UPDATE: ", slugToUpdate);
           return updateBlog(slugToUpdate, blogData);
         }
       })
       .then((res) => {
+        if (pathname.includes("update") && res.slugAffected != slug) {
+          router.push(`/update/${slug}`);
+        }
+        console.log("Success res, slug updated: ", res?.slugAffected);
+
         console.log(
           `Successfully ${pathname.includes("update") ? "Updated" : "Created"} blog`
         );

@@ -1,9 +1,11 @@
 "use server";
-
+import { PostgrestError } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/server";
 import type { Blog } from "@/lib/types";
 
-export async function createBlog(blogData: Blog): Promise<void> {
+export async function createBlog(
+  blogData: Blog
+): Promise<{ slugAffected: string }> {
   const supabase = await createClient();
 
   // supabase insert
@@ -11,12 +13,12 @@ export async function createBlog(blogData: Blog): Promise<void> {
 
   if (error) return Promise.reject(error);
 
-  return Promise.resolve();
+  return Promise.resolve({ slugAffected: blogData.slug });
 }
 export async function updateBlog(
   slug: string,
   newBlogData: Blog
-): Promise<void> {
+): Promise<{ slugAffected: string }> {
   const supabase = await createClient();
 
   console.log("Updating blog:", slug, newBlogData);
@@ -33,7 +35,7 @@ export async function updateBlog(
 
   if (error) return Promise.reject(error);
 
-  return Promise.resolve();
+  return Promise.resolve({ slugAffected: slug });
 }
 
 export async function getRandomBlog(): Promise<Blog | null> {

@@ -11,6 +11,10 @@ async function Update({ params }: Props) {
 
   const content = await getBlogBySlug(slug);
 
+  if (!content) {
+    return <h2>This blog doens't exist... check slug</h2>;
+  }
+
   return (
     <div id="editorjs" style={{ border: "1px solid grey", width: "800px" }}>
       <EditorJsHolder existingContent={content} />
