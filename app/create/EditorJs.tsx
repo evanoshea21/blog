@@ -161,7 +161,6 @@ function EditorJs({ existingContent }: Props) {
           isFeatured,
           category,
           content,
-          // content: JSON.parse(JSON.stringify(outputData)),
           author,
         };
         console.log("Blog Data: \n", blogData);
@@ -221,7 +220,7 @@ function EditorJs({ existingContent }: Props) {
           onChange={(e) => setDescription(e.target.value)}
           value={description ?? ""}
         />
-        <label htmlFor="image">image:</label>
+        <label htmlFor="image">Featured image:</label>
         <input
           type="text"
           id="image"

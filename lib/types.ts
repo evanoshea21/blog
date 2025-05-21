@@ -34,4 +34,6 @@ export type Blog = Omit<
     >
   >;
 
+export type BlogData = Omit<Blog, "content"> & { content: OutputData };
+
 export type Json = JsonSupa;
