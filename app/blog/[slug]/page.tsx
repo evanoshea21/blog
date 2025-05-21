@@ -22,7 +22,8 @@ export async function generateMetadata(
     title: blog.title + " | Evan's Blog",
     description: blog.description,
     metadataBase: new URL(`https://evanoshea.blog/blog/${slug}/`),
-    keywords: ["Next.js", "React", "JavaScript"], // TODO: create field for this
+    // keywords: ["Next.js", "React", "JavaScript"], // TODO: create field for this
+    keywords: (blog.keywords as string[]) || [],
     alternates: {
       canonical: "/",
       languages: {

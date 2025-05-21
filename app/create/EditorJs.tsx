@@ -4,6 +4,7 @@ import EditorJS from "@editorjs/editorjs";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { createBlog, updateBlog } from "@/app/server.actions";
+import { keywordsJsonToString } from "@/lib/utils";
 
 import Header from "@editorjs/header";
 import Quote from "@editorjs/quote";
@@ -19,6 +20,7 @@ import EditorjsList from "@editorjs/list";
 import type { OutputData } from "@editorjs/editorjs";
 import type { BlogPost, Json } from "@/lib/types";
 import { PostgrestError } from "@supabase/supabase-js";
+import { json } from "stream/consumers";
 
 interface Props {
   existingContent: BlogPost | null;
@@ -32,6 +34,7 @@ function EditorJs({ existingContent }: Props) {
   const [slug, setSlug] = React.useState<string>("");
   const [title, setTitle] = React.useState<string>();
   const [description, setDescription] = React.useState<string | null>(null);
+  const [keywords, setKeywords] = React.useState<string | null>(null);
   const [image, setImage] = React.useState<string | null>(null);
   const [status, setStatus] = React.useState<string>();
   const [isFeatured, setIsFeatured] = React.useState<boolean>(false);
@@ -58,6 +61,9 @@ function EditorJs({ existingContent }: Props) {
       setSlug(existingContent.slug);
       setTitle(existingContent.title);
       setDescription(existingContent.description);
+      setKeywords(
+        keywordsJsonToString(existingContent.keywords as unknown as string[])
+      );
       setImage(existingContent.image);
       setStatus(existingContent.status);
       setIsFeatured(existingContent.isFeatured || false);
@@ -158,6 +164,13 @@ function EditorJs({ existingContent }: Props) {
       .save()
       .then((outputData: OutputData) => {
         let content = outputData as unknown as Json;
+        let parsedKeywords: Json | null = null;
+
+        if (keywords && keywords.length) {
+          parsedKeywords = keywords
+            .split("\n")
+            .filter((item) => item.length > 0);
+        }
 
         const blogData: BlogPost = {
           slug,
@@ -169,6 +182,7 @@ function EditorJs({ existingContent }: Props) {
           category,
           content,
           author,
+          keywords: parsedKeywords,
         };
         console.log("Blog Data: \n", blogData);
 
@@ -241,6 +255,16 @@ function EditorJs({ existingContent }: Props) {
           name="description"
           onChange={(e) => setDescription(e.target.value)}
           value={description ?? ""}
+        />
+        <label htmlFor="keywords">Keywords (separate by line-break):</label>
+        <textarea
+          style={{ resize: "none" }}
+          rows={7}
+          cols={20}
+          id="keywords"
+          name="keywords"
+          onChange={(e) => setKeywords(e.target.value)}
+          value={keywords ?? ""}
         />
         <label htmlFor="image">Featured image:</label>
         <input

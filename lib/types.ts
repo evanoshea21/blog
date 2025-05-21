@@ -24,6 +24,7 @@ export type BlogPost = Omit<
   | "status"
   | "author"
   | "isFeatured"
+  | "keywords"
 > &
   Partial<
     Pick<
@@ -34,6 +35,7 @@ export type BlogPost = Omit<
       | "status"
       | "author"
       | "isFeatured"
+      | "keywords"
     >
   >;
 
