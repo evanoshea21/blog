@@ -176,7 +176,7 @@ function EditorJs({ existingContent }: Props) {
           title,
           description,
           image,
-          status,
+          status: status && status.length > 0 ? status : "Unpublished",
           isFeatured,
           category,
           content,
