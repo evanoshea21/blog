@@ -14,14 +14,12 @@ async function RenderBlog({ params }: Props) {
     console.error("Blog fetch err:", e);
   }
 
-  // for (let block of blog?.content.blocks || []) {
-  //   console.log("Block:", block);
-  // }
-
   if (!blog) return <div>No blog..</div>;
 
   return (
     <>
+      <h1>{blog.title}</h1>
+      <p>Author: {blog.author}</p>
       {blog.content.blocks.length ? (
         <>
           {blog.content.blocks.map((block) => (
@@ -29,7 +27,7 @@ async function RenderBlog({ params }: Props) {
           ))}
         </>
       ) : (
-        <div>No blocks</div>
+        <div>No blocks...</div>
       )}
     </>
   );

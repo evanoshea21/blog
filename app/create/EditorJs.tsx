@@ -18,6 +18,7 @@ import EditorjsList from "@editorjs/list";
 
 import type { OutputData } from "@editorjs/editorjs";
 import type { Blog, Json } from "@/lib/types";
+import { PostgrestError } from "@supabase/supabase-js";
 
 interface Props {
   existingContent: Blog | null;
@@ -36,6 +37,12 @@ function EditorJs({ existingContent }: Props) {
   const [isFeatured, setIsFeatured] = React.useState<boolean>(false);
   const [category, setCategory] = React.useState<string | null>(null);
   const [author, setAuthor] = React.useState<string>();
+
+  const [dupeSlugError, setDupeSlugError] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    console.log("Dupe err: ", dupeSlugError);
+  }, [dupeSlugError]);
 
   //TODO #100: validate fetched blog data content (for update path) is valid OutputData before putting it into the data config field
 
@@ -176,6 +183,8 @@ function EditorJs({ existingContent }: Props) {
       .then((res) => {
         if (pathname.includes("update") && res.slugAffected != slug) {
           router.push(`/update/${slug}`);
+        } else if (pathname.includes("create")) {
+          router.push(`/update/${slug}`);
         }
         console.log("Success res, slug updated: ", res?.slugAffected);
 
@@ -183,8 +192,17 @@ function EditorJs({ existingContent }: Props) {
           `Successfully ${pathname.includes("update") ? "Updated" : "Created"} blog`
         );
       })
-      .catch((error: any) => {
-        console.log("Saving failed: ", error);
+      .catch((err: Error) => {
+        console.warn(err.message);
+
+        const postgresError: PostgrestError = JSON.parse(err.message);
+
+        if (postgresError.code == "23505") {
+          // TODO: handle dupe Slug in UI
+          setDupeSlugError(true);
+        } else {
+          // setDupeSlugError(true);
+        }
       });
   }
 
@@ -198,10 +216,14 @@ function EditorJs({ existingContent }: Props) {
       >
         <label htmlFor="slug">Slug:</label>
         <input
+          style={{ border: dupeSlugError ? "3px solid red" : "1px solid grey" }}
           type="text"
           id="slug"
           name="slug"
-          onChange={(e) => setSlug(e.target.value)}
+          onChange={(e) => {
+            setSlug(e.target.value);
+            setDupeSlugError(false);
+          }}
           value={slug}
         />
         <label htmlFor="title">title:</label>

@@ -11,7 +11,7 @@ export async function createBlog(
   // supabase insert
   const { error } = await supabase.from("Blogs").insert(blogData);
 
-  if (error) return Promise.reject(error);
+  if (error) return Promise.reject(JSON.stringify(error));
 
   return Promise.resolve({ slugAffected: blogData.slug });
 }
