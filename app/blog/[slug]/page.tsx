@@ -18,6 +18,8 @@ export async function generateMetadata(
   // fetch post information
   const blog: BlogData = (await getBlogBySlug(slug)) as unknown as BlogData;
 
+  if (!blog) return { title: "404 page" };
+
   return {
     title: blog.title + " | Evan's Blog",
     description: blog.description,
