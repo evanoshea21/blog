@@ -11,7 +11,10 @@ export type BlogStatus = (typeof blogEnums.status)[number];
 export type BlogCategory = (typeof blogEnums.categories)[number];
 
 // This makes these table values optional as they have Default Values
-export type Blog = Omit<
+
+export type BlogGet = Tables<"Blogs">;
+
+export type BlogPost = Omit<
   Tables<"Blogs">,
   | "modified_at"
   | "published_at"
@@ -34,6 +37,6 @@ export type Blog = Omit<
     >
   >;
 
-export type BlogData = Omit<Blog, "content"> & { content: OutputData };
+export type BlogData = Omit<BlogPost, "content"> & { content: OutputData };
 
 export type Json = JsonSupa;

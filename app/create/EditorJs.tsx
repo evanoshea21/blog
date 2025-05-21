@@ -3,7 +3,7 @@ import React from "react";
 import EditorJS from "@editorjs/editorjs";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { createBlog, updateBlog, getRandomBlog } from "@/app/server.actions";
+import { createBlog, updateBlog } from "@/app/server.actions";
 
 import Header from "@editorjs/header";
 import Quote from "@editorjs/quote";
@@ -17,11 +17,11 @@ import Delimiter from "@editorjs/delimiter";
 import EditorjsList from "@editorjs/list";
 
 import type { OutputData } from "@editorjs/editorjs";
-import type { Blog, Json } from "@/lib/types";
+import type { BlogPost, Json } from "@/lib/types";
 import { PostgrestError } from "@supabase/supabase-js";
 
 interface Props {
-  existingContent: Blog | null;
+  existingContent: BlogPost | null;
 }
 
 function EditorJs({ existingContent }: Props) {
@@ -159,7 +159,7 @@ function EditorJs({ existingContent }: Props) {
       .then((outputData: OutputData) => {
         let content = outputData as unknown as Json;
 
-        const blogData: Blog = {
+        const blogData: BlogPost = {
           slug,
           title,
           description,
@@ -195,13 +195,13 @@ function EditorJs({ existingContent }: Props) {
       .catch((err: Error) => {
         console.warn(err.message);
 
-        const postgresError: PostgrestError = JSON.parse(err.message);
+        const postgresError: PostgrestError = JSON.parse(err.message); // TODO: will this incoming error always be PostGres related?
 
         if (postgresError.code == "23505") {
           // TODO: handle dupe Slug in UI
           setDupeSlugError(true);
         } else {
-          // setDupeSlugError(true);
+          // TODO: other errors to handle
         }
       });
   }

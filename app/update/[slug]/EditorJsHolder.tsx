@@ -2,12 +2,12 @@
 import React from "react";
 import dynamic from "next/dynamic";
 
-import type { Blog } from "@/lib/types";
+import type { BlogPost } from "@/lib/types";
 
 const EditorJs = dynamic(() => import("../../create/EditorJs"), { ssr: false });
 
 interface Props {
-  existingContent: Blog | null;
+  existingContent: BlogPost | null;
 }
 
 function EditorJsHolder({ existingContent }: Props) {
