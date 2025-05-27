@@ -4,7 +4,7 @@ import Block from "../Block";
 import type { Metadata, ResolvingMetadata } from "next";
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 // TODO: update meta data image sizes / etc

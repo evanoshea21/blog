@@ -18,7 +18,14 @@ import Delimiter from "@editorjs/delimiter";
 import EditorjsList from "@editorjs/list";
 
 import type { OutputData } from "@editorjs/editorjs";
-import type { BlogPost, Json } from "@/lib/types";
+import {
+  type BlogPost,
+  type Json,
+  type PublishStatus,
+  type BlogCategory,
+  PublishStatuses,
+  BlogCategories,
+} from "@/lib/types";
 import { PostgrestError } from "@supabase/supabase-js";
 
 interface Props {
@@ -35,9 +42,9 @@ function EditorJs({ existingContent }: Props) {
   const [description, setDescription] = React.useState<string | null>(null);
   const [keywords, setKeywords] = React.useState<string | null>(null);
   const [image, setImage] = React.useState<string | null>(null);
-  const [status, setStatus] = React.useState<string>();
+  const [status, setStatus] = React.useState<PublishStatus>("Unpublished");
   const [isFeatured, setIsFeatured] = React.useState<boolean>(false);
-  const [category, setCategory] = React.useState<string | null>(null);
+  const [category, setCategory] = React.useState<BlogCategory>("Personal");
   const [author, setAuthor] = React.useState<string>();
 
   const [dupeSlugError, setDupeSlugError] = React.useState<boolean>(false);
@@ -206,9 +213,11 @@ function EditorJs({ existingContent }: Props) {
         );
       })
       .catch((err: Error) => {
+        console.warn("POST error");
         console.warn(err.message);
 
         const postgresError: PostgrestError = JSON.parse(err.message); // TODO: will this incoming error always be PostGres related?
+        console.log("Msg: ", postgresError.message);
 
         if (postgresError.code == "23505") {
           // TODO: handle dupe Slug in UI
@@ -239,6 +248,7 @@ function EditorJs({ existingContent }: Props) {
           }}
           value={slug}
         />
+
         <label htmlFor="title">title:</label>
         <input
           type="text"
@@ -247,6 +257,7 @@ function EditorJs({ existingContent }: Props) {
           onChange={(e) => setTitle(e.target.value)}
           value={title ?? ""}
         />
+
         <label htmlFor="description">description:</label>
         <input
           type="text"
@@ -255,6 +266,7 @@ function EditorJs({ existingContent }: Props) {
           onChange={(e) => setDescription(e.target.value)}
           value={description ?? ""}
         />
+
         <label htmlFor="keywords">Keywords (separate by line-break):</label>
         <textarea
           style={{ resize: "none" }}
@@ -265,6 +277,7 @@ function EditorJs({ existingContent }: Props) {
           onChange={(e) => setKeywords(e.target.value)}
           value={keywords ?? ""}
         />
+
         <label htmlFor="image">Featured image:</label>
         <input
           type="text"
@@ -273,14 +286,24 @@ function EditorJs({ existingContent }: Props) {
           onChange={(e) => setImage(e.target.value)}
           value={image ?? ""}
         />
-        <label htmlFor="status">status:</label>
-        <input
-          type="text"
+
+        <label htmlFor="status">Publish Status</label>
+        <select
           id="status"
           name="status"
-          onChange={(e) => setStatus(e.target.value)}
-          value={status ?? ""}
-        />
+          value={status}
+          onChange={(e) => {
+            let val: PublishStatus = e.target.value as PublishStatus;
+            setStatus(val);
+          }}
+        >
+          {PublishStatuses.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
+        </select>
+
         <label htmlFor="isFeatured">isFeatured:</label>
         <input
           type="checkbox"
@@ -289,14 +312,22 @@ function EditorJs({ existingContent }: Props) {
           onChange={(e) => setIsFeatured(e.target.checked)}
           checked={isFeatured}
         />
-        <label htmlFor="category">category:</label>
-        <input
-          type="text"
+        <label htmlFor="category">Category</label>
+        <select
           id="category"
           name="category"
-          onChange={(e) => setCategory(e.target.value)}
-          value={category ?? ""}
-        />
+          value={category}
+          onChange={(e) => {
+            let val: BlogCategory = e.target.value as BlogCategory;
+            setCategory(val);
+          }}
+        >
+          {BlogCategories.map((cat: BlogCategory) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
         <label htmlFor="author">author:</label>
         <input
           type="text"
