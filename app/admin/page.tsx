@@ -1,5 +1,6 @@
 import { getAllBlogs } from "../server.actions";
 import type { BlogGet } from "@/lib/types";
+import classes from "./styles.module.css";
 import EditBtns from "./EditBtns";
 
 async function AdminView() {
@@ -11,10 +12,7 @@ async function AdminView() {
     <>
       {blogs.map((blog: BlogGet, i: number) => {
         return (
-          <div
-            key={blog.id}
-            style={{ border: "3px solid grey", margin: "30px" }}
-          >
+          <div key={blog.id} className={classes.box}>
             <p>Title: {blog.title}</p>
             <p>Description: {blog.description}</p>
             <p>Slug: {blog.slug}</p>

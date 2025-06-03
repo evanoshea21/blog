@@ -12,7 +12,7 @@ interface Props {
 
 function EditorJsHolder({ existingContent }: Props) {
   return (
-    <div id="editorjs" style={{ border: "1px solid grey", width: "800px" }}>
+    <div id="editorjs" style={{ width: "800px" }}>
       <EditorJs existingContent={existingContent} />
     </div>
   );

@@ -1,6 +1,6 @@
 import { OutputBlockData } from "@editorjs/editorjs";
-import { List } from "postcss/lib/list";
 import { JSX } from "react";
+import classes from "./styles.module.css";
 
 interface Props {
   block: OutputBlockData;
@@ -62,11 +62,13 @@ function Block({ block }: Props) {
 
     case "image":
       return (
-        <div
-          style={{ width: "800px", height: "300px", border: "3px solid green" }}
-        >
+        <div className={classes.imgBox}>
           <img
-            style={{ objectFit: "contain", width: "100%", height: "100%" }}
+            style={{
+              objectFit: "contain",
+              width: "100%",
+              height: "100%",
+            }}
             src={block.data.file.url}
           />
         </div>
