@@ -8,6 +8,7 @@ import { keywordsJsonToString } from "@/lib/utils";
 
 import Header from "@editorjs/header";
 import Quote from "@editorjs/quote";
+import AudioTool from "@furison-tech/editorjs-audio";
 // @ts-ignore
 import Paragraph from "editorjs-paragraph-with-alignment";
 // @ts-ignore
@@ -131,6 +132,51 @@ function EditorJs({ existingContent }: Props) {
                   };
                 });
               },
+            },
+          },
+        },
+        audio: {
+          class: AudioTool,
+          config: {
+            /**
+             * Custom uploader
+             */
+            uploader: {
+              /**
+               * Upload file to the server and return an uploaded audio data
+               * @param {File} file - file selected from the device or pasted by drag-n-drop
+               * @return {Promise.<{success, file: {url}}>}
+               */
+              uploadByFile(file: File) {
+                // your own uploading logic here
+                return FileUploader.upload(file).then(() => {
+                  return {
+                    success: 1,
+                    file: {
+                      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                      // any other audio data you want to store, such as width, height, color, extension, etc
+                    },
+                  };
+                });
+              },
+
+              /**
+               * Send URL-string to the server. Backend should load audio by this URL and return an uploaded audio data
+               * @param {string} url - pasted audio URL
+               * @return {Promise.<{success, file: {url}}>}
+               */
+              // uploadByUrl(url){
+              //   // your ajax request for uploading
+              //   return MyAjax.upload(file).then(() => {
+              //     return {
+              //       success: 1,
+              //       file: {
+              //         url: 'https://bangery.com/community-content/samples/1-kick.mp3',
+              //         // any other audio data you want to store, such as width, height, color, extension, etc
+              //       }
+              //     }
+              //   })
+              // }
             },
           },
         },
